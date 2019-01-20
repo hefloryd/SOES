@@ -420,7 +420,6 @@ typedef struct CC_PACKED
 #endif
 
    uint8_t SMtestresult;
-   int16_t temp;
    uint32_t PrevTime;
    _ESCsm SM[4];
    /* Volatile since it may be read from ISR */
