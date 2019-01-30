@@ -413,14 +413,18 @@ void SDO_download (void)
             }
             else
             {
-               /* normal upload */
+               /* normal download */
                size = (etohl (coesdo->size) & 0xffff);
                mbxdata = (&(coesdo->size)) + 1;
             }
             actsize = ((objd + nsub)->bitlength + 7) >> 3;
             if (actsize == size)
             {
-               if (ESC_pre_objecthandler (index, subindex))
+               if (ESC_pre_objecthandler (index,
+                     subindex,
+                     mbxdata,
+                     size,
+                     false))
                {
                   copy2mbx (mbxdata, (objd + nsub)->data, size);
                   MBXout = ESC_claimbuffer ();
@@ -438,7 +442,7 @@ void SDO_download (void)
                      MBXcontrol[MBXout].state = MBXstate_outreq;
                   }
                  /* external object write handler */
-                 ESC_objecthandler (index, subindex);
+                 ESC_objecthandler (index, subindex, false);
                }
             }
             else
