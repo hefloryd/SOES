@@ -1,16 +1,17 @@
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#ifndef __ECAT_OPTIONS_H__
+#define __ECAT_OPTIONS_H__
 
-#include <cc.h>
+#define USE_FOE 1
+#define USE_EOE 0
 
-#define MAX_INPUT_SIZE   128    /* Max processdata size (inputs) */
-#define MAX_OUTPUT_SIZE  128    /* Max processdata size (outputs) */
+#define MAX_INPUT_SIZE   128
+#define MAX_OUTPUT_SIZE  128
 
-#define MAX_PDO          2      /* Max number of writeable PDOs (RX + TX) */
-#define MAX_PDO_ENTRIES  4      /* Max number of entries in a writeable PDO */
+#define MAX_PDO          2
+#define MAX_PDO_ENTRIES  4
 
-#define MAX_SM_ENTRIES   4      /* Max number of PDOs in a SyncManager */
-#define MAX_SM_MAPPINGS  16     /* Max number of mapped objects in a SyncManager */
+#define MAX_SM_ENTRIES   4
+#define MAX_SM_MAPPINGS  16
 
 #define MBXSIZE     128
 #define MBXSIZEBOOT 128
@@ -41,4 +42,4 @@
 #define SM3_smc     0x20
 #define SM3_act     1
 
-#endif /* __CONFIG_H__ */
+#endif /* __ECAT_OPTIONS_H__ */

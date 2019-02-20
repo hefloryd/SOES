@@ -1,8 +1,8 @@
 #ifndef __UTYPES_H__
 #define __UTYPES_H__
 
-#include <cc.h>
-#include "config.h"
+#include "cc.h"
+#include "options.h"
 
 /* NOTE: Not packed, does not use bitfields */
 
