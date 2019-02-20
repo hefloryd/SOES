@@ -3,7 +3,7 @@
 #include "esc.h"
 #include "esc_hw.h"
 #include "ecat_slv.h"
-#include "config.h"
+#include "options.h"
 #include "utypes.h"
 
 /* Global variables used by the stack */
