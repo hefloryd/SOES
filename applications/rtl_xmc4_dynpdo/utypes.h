@@ -27,7 +27,36 @@ typedef struct
    int32_t PARAM2;
 
    /* Manufacturer specific data */
-
+   struct
+   {
+      uint16_t SyncType;
+      uint32_t CycleTime;
+      uint32_t ShiftTime;
+      uint16_t SyncTypeSupport;
+      uint32_t MinCycleTime;
+      uint32_t CalcCopyTime;
+      uint32_t MinDelayTime;
+      uint16_t GetCycleTime;
+      uint32_t DelayTime;
+      uint32_t Sync0CycleTime;
+      uint16_t SMEventMissedCnt;
+      uint16_t CycleTimeTooSmallCnt;
+      uint16_t ShiftTimeTooSmallCnt;
+      uint16_t RxPDOToggleFailed;
+      uint32_t MinCycleDist;
+      uint32_t MaxCycleDist;
+      uint32_t MinSMSYNCDist;
+      uint32_t MaxSMSYNCDist;
+      uint8_t Dummy_x14;
+      uint8_t SyncError;
+   } SyncMgrParam;
+   
+   struct
+   {
+      uint8_t Dummy_x01;
+      uint16_t SyncErrorCounterLimit;
+   } ErrorSettings;
+   
    /* Storage for configurable PDO:s */
    struct
    {

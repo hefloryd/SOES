@@ -26,6 +26,10 @@ static const char acName1018_01[] = "Vendor ID";
 static const char acName1018_02[] = "Product Code";
 static const char acName1018_03[] = "Revision Number";
 static const char acName1018_04[] = "Serial Number";
+static const char acName10F1[] = "ErrorSettings";
+static const char acName10F1_00[] = "Max SubIndex";
+static const char acName10F1_01[] = "Dummy_x01";
+static const char acName10F1_02[] = "SyncErrorCounterLimit";
 static const char acName1600[] = "Outputs";
 static const char acName1600_00[] = "Max SubIndex";
 static const char acName1600_01[] = "OUT1";
@@ -65,6 +69,28 @@ static const char acName1C13_01[] = "PDO Mapping";
 static const char acName1C13_02[] = "PDO Mapping";
 static const char acName1C13_03[] = "PDO Mapping";
 static const char acName1C13_04[] = "PDO Mapping";
+static const char acName1C32[] = "SyncMgrParam";
+static const char acName1C32_00[] = "Max SubIndex";
+static const char acName1C32_01[] = "SyncType";
+static const char acName1C32_02[] = "CycleTime";
+static const char acName1C32_03[] = "ShiftTime";
+static const char acName1C32_04[] = "SyncTypeSupport";
+static const char acName1C32_05[] = "MinCycleTime";
+static const char acName1C32_06[] = "CalcCopyTime";
+static const char acName1C32_07[] = "MinDelayTime";
+static const char acName1C32_08[] = "GetCycleTime";
+static const char acName1C32_09[] = "DelayTime";
+static const char acName1C32_0A[] = "Sync0CycleTime";
+static const char acName1C32_0B[] = "SMEventMissedCnt";
+static const char acName1C32_0C[] = "CycleTimeTooSmallCnt";
+static const char acName1C32_0D[] = "ShiftTimeTooSmallCnt";
+static const char acName1C32_0E[] = "RxPDOToggleFailed";
+static const char acName1C32_0F[] = "MinCycleDist";
+static const char acName1C32_10[] = "MaxCycleDist";
+static const char acName1C32_11[] = "MinSMSYNCDist";
+static const char acName1C32_12[] = "MaxSMSYNCDist";
+static const char acName1C32_14[] = "Dummy_x14";
+static const char acName1C32_20[] = "SyncError";
 static const char acName6000[] = "IN1";
 static const char acName6000_0[] = "IN1";
 static const char acName6001[] = "IN2";
@@ -106,6 +132,12 @@ const _objd SDO1018[] =
   {0x02, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1018_02, 0x10cc, NULL},
   {0x03, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1018_03, 0, NULL},
   {0x04, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1018_04, 0x00000000, NULL},
+};
+const _objd SDO10F1[] =
+{
+  {0x00, DTYPE_UNSIGNED8, 8, ATYPE_RO, acName10F1_00, 2, NULL},
+  {0x01, DTYPE_UNSIGNED8, 8, ATYPE_RO, acName10F1_01, 0, &Obj.ErrorSettings.Dummy_x01},
+  {0x02, DTYPE_UNSIGNED16, 16, ATYPE_RW, acName10F1_02, 2, &Obj.ErrorSettings.SyncErrorCounterLimit},
 };
 const _objd SDO1600[] =
 {
@@ -166,6 +198,30 @@ const _objd SDO1C13[] =
   {0x03, DTYPE_UNSIGNED16, 16, ATYPE_RWpre, acName1C13_03, 0x1A02, &Obj.SM[1].value[2]},
   {0x04, DTYPE_UNSIGNED16, 16, ATYPE_RWpre, acName1C13_04, 0x1A03, &Obj.SM[1].value[3]},
 };
+const _objd SDO1C32[] =
+{
+  {0x00, DTYPE_UNSIGNED8, 8, ATYPE_RO, acName1C32_00, 32, NULL},
+  {0x01, DTYPE_UNSIGNED16, 16, ATYPE_RO, acName1C32_01, 1, &Obj.SyncMgrParam.SyncType},
+  {0x02, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_02, 0, &Obj.SyncMgrParam.CycleTime},
+  {0x03, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_03, 0, &Obj.SyncMgrParam.ShiftTime},
+  {0x04, DTYPE_UNSIGNED16, 16, ATYPE_RO, acName1C32_04, 0x6, &Obj.SyncMgrParam.SyncTypeSupport},
+  {0x05, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_05, 125000, &Obj.SyncMgrParam.MinCycleTime},
+  {0x06, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_06, 0, &Obj.SyncMgrParam.CalcCopyTime},
+  {0x07, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_07, 0, &Obj.SyncMgrParam.MinDelayTime},
+  {0x08, DTYPE_UNSIGNED16, 16, ATYPE_RO, acName1C32_08, 0, &Obj.SyncMgrParam.GetCycleTime},
+  {0x09, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_09, 0, &Obj.SyncMgrParam.DelayTime},
+  {0x0A, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_0A, 0, &Obj.SyncMgrParam.Sync0CycleTime},
+  {0x0B, DTYPE_UNSIGNED16, 16, ATYPE_RO, acName1C32_0B, 0, &Obj.SyncMgrParam.SMEventMissedCnt},
+  {0x0C, DTYPE_UNSIGNED16, 16, ATYPE_RO, acName1C32_0C, 0, &Obj.SyncMgrParam.CycleTimeTooSmallCnt},
+  {0x0D, DTYPE_UNSIGNED16, 16, ATYPE_RO, acName1C32_0D, 0, &Obj.SyncMgrParam.ShiftTimeTooSmallCnt},
+  {0x0E, DTYPE_UNSIGNED16, 16, ATYPE_RO, acName1C32_0E, 0, &Obj.SyncMgrParam.RxPDOToggleFailed},
+  {0x0F, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_0F, 0, &Obj.SyncMgrParam.MinCycleDist},
+  {0x10, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_10, 0, &Obj.SyncMgrParam.MaxCycleDist},
+  {0x11, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_11, 0, &Obj.SyncMgrParam.MinSMSYNCDist},
+  {0x12, DTYPE_UNSIGNED32, 32, ATYPE_RO, acName1C32_12, 0, &Obj.SyncMgrParam.MaxSMSYNCDist},
+  {0x14, DTYPE_UNSIGNED8, 8, ATYPE_RO, acName1C32_14, 0, &Obj.SyncMgrParam.Dummy_x14},
+  {0x20, DTYPE_UNSIGNED8, 8, ATYPE_RO, acName1C32_20, 0, &Obj.SyncMgrParam.SyncError},
+};
 const _objd SDO6000[] =
 {
   {0x0, DTYPE_BIT1, 1, ATYPE_TXPDO | ATYPE_RO, acName6000_0, 0, &Obj.IN1},
@@ -205,6 +261,7 @@ const _objectlist SDOobjects[] =
   {0x1009, OTYPE_VAR, 0, 0, acName1009, SDO1009},
   {0x100A, OTYPE_VAR, 0, 0, acName100A, SDO100A},
   {0x1018, OTYPE_RECORD, 4, 0, acName1018, SDO1018},
+  {0x10F1, OTYPE_RECORD, 2, 0, acName10F1, SDO10F1},
   {0x1600, OTYPE_RECORD, 3, 0, acName1600, SDO1600},
   {0x1A00, OTYPE_RECORD, 2, 0, acName1A00, SDO1A00},
   {0x1A01, OTYPE_RECORD, 2, 0, acName1A01, SDO1A01},
@@ -213,6 +270,7 @@ const _objectlist SDOobjects[] =
   {0x1C00, OTYPE_ARRAY, 4, 0, acName1C00, SDO1C00},
   {0x1C12, OTYPE_ARRAY, 1, 0, acName1C12, SDO1C12},
   {0x1C13, OTYPE_ARRAY, 4, 0, acName1C13, SDO1C13},
+  {0x1C32, OTYPE_RECORD, 32, 0, acName1C32, SDO1C32},
   {0x6000, OTYPE_VAR, 0, 0, acName6000, SDO6000},
   {0x6001, OTYPE_VAR, 0, 0, acName6001, SDO6001},
   {0x6002, OTYPE_VAR, 0, 0, acName6002, SDO6002},

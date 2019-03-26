@@ -32,13 +32,24 @@ void cb_set_outputs (void)
 {
 }
 
-int main(void)
+
+/* Setup of DC */
+uint16_t dc_checker (void)
+{
+   /* Indicate we run DC */
+   ESCvar.dcsync = 1;
+   /* Fetch the sync counter limit  SDO10F1*/
+   ESCvar.synccounterlimit = Obj.ErrorSettings.SyncErrorCounterLimit;
+   return 0;
+}
+
+int main (void)
 {
    static esc_cfg_t config =
    {
       .user_arg = NULL,
-      .use_interrupt = 0,
-      .watchdog_cnt = 1000,
+      .use_interrupt = 1,
+      .watchdog_cnt = INT32_MAX, /* Use HW SM watchdog instead */
       .mbxsize = MBXSIZE,
       .mbxsizeboot = MBXSIZEBOOT,
       .mbxbuffers = MBXBUFFERS,
@@ -60,18 +71,13 @@ int main(void)
       .post_object_download_hook = NULL,
       .rxpdo_override = NULL,
       .txpdo_override = NULL,
-      .esc_hw_interrupt_enable = NULL,
-      .esc_hw_interrupt_disable = NULL,
-      .esc_hw_eep_handler = ESC_eep_handler
+      .esc_hw_interrupt_enable = ESC_interrupt_enable,
+      .esc_hw_interrupt_disable = ESC_interrupt_disable,
+      .esc_hw_eep_handler = ESC_eep_handler,
+      .esc_check_dc_handler = dc_checker
    };
 
    rprintf ("Hello world\n");
    ecat_slv_init (&config);
-
-   for (;;)
-   {
-      ecat_slv();
-   }
-
    return 0;
 }
