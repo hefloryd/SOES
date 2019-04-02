@@ -194,9 +194,14 @@ void ecat_slv_worker (uint32_t event_mask)
 #if USE_FOE
          ESC_foeprocess();
 #endif
+#if USE_EOE
+         ESC_eoeprocess();
+#endif
          ESC_xoeprocess();
       }
-
+#if USE_EOE
+      ESC_eoeprocess_tx();
+#endif
       /* Call emulated eeprom handler if set */
       if (ESCvar.esc_hw_eep_handler != NULL)
       {
@@ -233,8 +238,14 @@ void ecat_slv_poll (void)
 #if USE_FOE
       ESC_foeprocess();
 #endif
+#if USE_EOE
+      ESC_eoeprocess();
+#endif
       ESC_xoeprocess();
    }
+#if USE_EOE
+   ESC_eoeprocess_tx();
+#endif
 
    /* Call emulated eeprom handler if set */
    if (ESCvar.esc_hw_eep_handler != NULL)
@@ -276,6 +287,11 @@ void ecat_slv_init (esc_cfg_t * config)
 #if USE_FOE
    /* Init FoE */
    FOE_init();
+#endif
+
+#if USE_EOE
+   /* Init EoE */
+   EOE_init();
 #endif
 
    /* reset ESC to init state */
