@@ -237,12 +237,6 @@ typedef struct esc_cfg
    void * user_arg;
    int use_interrupt;
    int watchdog_cnt;
-   size_t mbxsize;
-   size_t mbxsizeboot;
-   int mbxbuffers;
-   sm_cfg_t mb[2];
-   sm_cfg_t mb_boot[2];
-   sm_cfg_t pdosm[2];
    void (*pre_state_change_hook) (uint8_t * as, uint8_t * an);
    void (*post_state_change_hook) (uint8_t * as, uint8_t * an);
    void (*application_hook) (void);
