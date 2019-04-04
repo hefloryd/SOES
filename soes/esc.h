@@ -247,10 +247,10 @@ typedef struct esc_cfg
          uint8_t subindex,
          void * data,
          size_t size,
-         bool isCA);
+         uint16_t flags);
    void (*post_object_download_hook) (uint16_t index,
          uint8_t subindex,
-         bool isCA);
+         uint16_t flags);
    void (*rxpdo_override) (void);
    void (*txpdo_override) (void);
    void (*esc_hw_interrupt_enable) (uint32_t mask);
@@ -362,10 +362,10 @@ typedef struct
          uint8_t subindex,
          void * data,
          size_t size,
-         bool isCA);
+         uint16_t flags);
    void (*post_object_download_hook) (uint16_t index,
          uint8_t subindex,
-         bool isCA);
+         uint16_t flags);
    void (*rxpdo_override) (void);
    void (*txpdo_override) (void);
    void (*esc_hw_interrupt_enable) (uint32_t mask);
