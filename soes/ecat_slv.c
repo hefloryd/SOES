@@ -38,14 +38,18 @@ uint32_t ESC_pre_objecthandler (uint16_t index,
 {
    int abort = 0;
 
-   if (IS_RXPDO (index) || IS_TXPDO (index))
+   if (IS_RXPDO (index) ||
+       IS_TXPDO (index) ||
+       index == RX_PDO_OBJIDX ||
+       index == TX_PDO_OBJIDX)
    {
       if (subindex > 0 && COE_maxSub (index) != 0)
       {
          abort = ABORT_SUBINDEX0_NOT_ZERO;
       }
    }
-   else if (ESCvar.pre_object_download_hook)
+
+   if (ESCvar.pre_object_download_hook)
    {
       abort = (ESCvar.pre_object_download_hook) (index,
             subindex,
