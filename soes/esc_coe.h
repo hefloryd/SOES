@@ -98,8 +98,7 @@ typedef struct
 #define RX_PDO_OBJIDX           0x1c12
 
 void ESC_coeprocess (void);
-uint16_t sizeOfDynPDO (uint16_t index, int * nmappings, _SMmap * sm, int max_mappings);
-uint16_t sizeOfPDO (uint16_t index);
+uint16_t sizeOfPDO (uint16_t index, int * nmappings, _SMmap * sm, int max_mappings);
 void SDO_abort (uint16_t index, uint8_t subindex, uint32_t abortcode);
 void COE_initDefaultValues (void);
 

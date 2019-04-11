@@ -65,11 +65,20 @@ int32_t SDO_findobject (uint16_t index)
    return n;
 }
 
-#if MAX_MAPPINGS_SM2 || MAX_MAPPINGS_SM3
 /**
  * Calculate the size in Bytes of RxPDO or TxPDOs by adding the
  * objects in SyncManager SDO 1C1x.
  *
+ * A list of mapped objects is created for fast handling of
+ * dynamically mapped process data. The max size of the list (\a
+ * max_mappings) can be set to 0 if dynamic processdata is not
+ * supported.
+ *
+ * The output variable \a nmappings is set to 0 if dynamic processdata
+ * is not supported. It is set to the number of mapped objects if
+ * dynamic processdata is supported, or -1 if the mapping was
+ * incorrect.
+
  * @param[in] index = SM index
  * @param[out] nmappings = number of mapped objects in SM, or -1 if
  *   mapping is invalid
@@ -77,7 +86,7 @@ int32_t SDO_findobject (uint16_t index)
  * @param[out] max_mappings = max number of mapped objects in SM
  * @return size of RxPDO or TxPDOs in Bytes.
  */
-uint16_t sizeOfDynPDO (uint16_t index, int * nmappings,_SMmap * mappings,
+uint16_t sizeOfPDO (uint16_t index, int * nmappings, _SMmap * mappings,
                     int max_mappings)
 {
    uint16_t offset = 0, hobj;
@@ -117,111 +126,57 @@ uint16_t sizeOfDynPDO (uint16_t index, int * nmappings,_SMmap * mappings,
             for (c = 1; c <= maxsub; c++)
             {
                uint32_t value = OBJ_VALUE_FETCH (value, objd[c]);
-               uint16_t index = value >> 16;
-               uint8_t subindex = (value >> 8) & 0xFF;
                uint8_t bitlength = value & 0xFF;
-               const _objd * mapping;
 
-               if (mapIx == max_mappings)
+               if (max_mappings > 0)
                {
-                  /* Too many mapped objects */
-                  *nmappings = -1;
-                  return 0;
-               }
+                  uint16_t index = value >> 16;
+                  uint8_t subindex = (value >> 8) & 0xFF;
+                  const _objd * mapping;
 
-               DPRINT ("%04x:%02x @ %d\n", index, subindex, offset);
-               nidx = SDO_findobject (index);
-               if (nidx >= 0)
-               {
-                  int16_t nsub;
+                  if (mapIx == max_mappings)
+                  {
+                     /* Too many mapped objects */
+                     *nmappings = -1;
+                     return 0;
+                  }
 
-                  nsub = SDO_findsubindex (nidx, subindex);
-                  if (nsub < 0)
+                  DPRINT ("%04x:%02x @ %d\n", index, subindex, offset);
+                  nidx = SDO_findobject (index);
+                  if (nidx >= 0)
+                  {
+                     int16_t nsub;
+
+                     nsub = SDO_findsubindex (nidx, subindex);
+                     if (nsub < 0)
+                     {
+                        mapping = NULL;
+                     }
+
+                     mapping = &SDOobjects[nidx].objdesc[nsub];
+                  }
+                  else
                   {
                      mapping = NULL;
                   }
 
-                  mapping = &SDOobjects[nidx].objdesc[nsub];
+                  mappings[mapIx].obj = mapping;
+                  mappings[mapIx++].offset = offset;
                }
-               else
-               {
-                  mapping = NULL;
-               }
-
-               mappings[mapIx].obj = mapping;
-               mappings[mapIx++].offset = offset;
 
                offset += bitlength;
             }
          }
       }
    }
-   *nmappings = mapIx;
+
+   if (mappings != NULL)
+   {
+      *nmappings = mapIx;
+   }
+
    return BITS2BYTES (offset);
 }
-#else
-/** Calculate the size in Bytes of RxPDO or TxPDOs by adding the objects
- * in SyncManager
- * SDO 1C1x.
- *
- * @return size of RxPDO or TxPDOs in Bytes.
- */
-uint16_t sizeOfPDO (uint16_t index)
-{
-   uint16_t size = 0, hobj, l, si, c, sic;
-   int16_t nidx;
-   const _objd *objd;
-   const _objd *objd1c1x;
-
-   nidx = SDO_findobject (index);
-
-   if(nidx < 0)
-   {
-      return size;
-   }
-   else if((index != RX_PDO_OBJIDX) && (index != TX_PDO_OBJIDX))
-   {
-      return size;
-   }
-
-   objd1c1x = objd = SDOobjects[nidx].objdesc;
-
-   if (objd1c1x[0].data)
-   {
-      si = *((uint8_t *) objd1c1x[0].data);
-   }
-   else
-   {
-      si = (uint8_t) objd1c1x[0].value;
-   }
-   if (si)
-   {
-      for (sic = 1; sic <= si; sic++)
-      {
-         if (objd1c1x[sic].data)
-         {
-            hobj = *((uint16_t *) objd1c1x[sic].data);
-            hobj = htoes(hobj);
-         }
-         else
-         {
-            hobj = (uint16_t) objd1c1x[sic].value;
-         }
-         nidx = SDO_findobject (hobj);
-         if (nidx > 0)
-         {
-            objd = SDOobjects[nidx].objdesc;
-            l = (uint8_t) objd->value;
-            for (c = 1; c <= l; c++)
-            {
-               size += ((objd + c)->value & 0xff);
-            }
-         }
-      }
-   }
-   return BITS2BYTES (size);
-}
-#endif
 
 /** Copy to mailbox.
  *

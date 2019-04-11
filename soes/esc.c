@@ -1036,8 +1036,7 @@ void ESC_state (void)
       case PREOP_TO_SAFEOP:
       case SAFEOP_TO_SAFEOP:
       {
-#if MAX_MAPPINGS_SM2 || MAX_MAPPINGS_SM3
-         ESCvar.ESC_SM2_sml = sizeOfDynPDO (RX_PDO_OBJIDX, &ESCvar.sm2mappings,
+         ESCvar.ESC_SM2_sml = sizeOfPDO (RX_PDO_OBJIDX, &ESCvar.sm2mappings,
                                          SMmap2, MAX_MAPPINGS_SM2);
          if (ESCvar.sm2mappings < 0)
          {
@@ -1046,7 +1045,7 @@ void ESC_state (void)
             break;
          }
 
-         ESCvar.ESC_SM3_sml = sizeOfDynPDO (TX_PDO_OBJIDX, &ESCvar.sm3mappings,
+         ESCvar.ESC_SM3_sml = sizeOfPDO (TX_PDO_OBJIDX, &ESCvar.sm3mappings,
                                          SMmap3, MAX_MAPPINGS_SM3);
          if (ESCvar.sm3mappings < 0)
          {
@@ -1061,16 +1060,6 @@ void ESC_state (void)
             ESC_SMenable (2);
          }
          break;
-#else
-         ESCvar.ESC_SM2_sml = sizeOfPDO (RX_PDO_OBJIDX);
-         ESCvar.ESC_SM3_sml = sizeOfPDO (TX_PDO_OBJIDX);
-         an = ESC_startinput (ac);
-         if (an == ac)
-         {
-            ESC_SMenable (2);
-         }
-         break;
-#endif
       }
       case PREOP_TO_OP:
       {

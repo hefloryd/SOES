@@ -21,20 +21,19 @@ _ESCvar     ESCvar;
 
 /* Private variables */
 static volatile int watchdog;
-#if MAX_MAPPINGS_SM2
-   #if MAX_RXPDO_SIZE
-      static uint8_t rxpdo[MAX_RXPDO_SIZE] __attribute__((aligned (8)));
-   #endif
+
+#if MAX_MAPPINGS_SM2 > 0
+static uint8_t rxpdo[MAX_RXPDO_SIZE] __attribute__((aligned (8)));
 #else
-   extern uint8_t * rxpdo;
+extern uint8_t * rxpdo;
 #endif
-#if MAX_MAPPINGS_SM3
-   #if MAX_TXPDO_SIZE
-      static uint8_t txpdo[MAX_TXPDO_SIZE] __attribute__((aligned (8)));
-   #endif
+
+#if MAX_MAPPINGS_SM3 > 0
+static uint8_t txpdo[MAX_TXPDO_SIZE] __attribute__((aligned (8)));
 #else
-   extern uint8_t * txpdo;
+extern uint8_t * txpdo;
 #endif
+
 /** Function to pre-qualify the incoming SDO download.
  *
  * @param[in] index      = index of SDO download request to check
@@ -109,17 +108,11 @@ void TXPDO_update (void)
    }
    else
    {
-#if MAX_MAPPINGS_SM3
-   #if MAX_TXPDO_SIZE
-      COE_pdoPack (txpdo, ESCvar.sm3mappings, SMmap3);
+      if (MAX_MAPPINGS_SM3 > 0)
+      {
+         COE_pdoPack (txpdo, ESCvar.sm3mappings, SMmap3);
+      }
       ESC_write (ESC_SM3_sma, txpdo, ESCvar.ESC_SM3_sml);
-   #else
-      /* Use an application specific function to handle ESC access */
-   #endif
-#else
-      ESC_write (ESC_SM3_sma, txpdo, ESCvar.ESC_SM3_sml);
-#endif
-
    }
 }
 
@@ -133,18 +126,11 @@ void RXPDO_update (void)
    }
    else
    {
-#if MAX_MAPPINGS_SM2
-   #if MAX_RXPDO_SIZE
       ESC_read (ESC_SM2_sma, rxpdo, ESCvar.ESC_SM2_sml);
-      COE_pdoUnpack (rxpdo, ESCvar.sm2mappings, SMmap2);
-   #else
-      /* Use an application specific function to handle ESC access */
-   #endif
-#else
-      ESC_read (ESC_SM2_sma, rxpdo, ESCvar.ESC_SM2_sml);
-#endif
-
-
+      if (MAX_MAPPINGS_SM2 > 0)
+      {
+         COE_pdoUnpack (rxpdo, ESCvar.sm2mappings, SMmap2);
+      }
    }
 }
 
